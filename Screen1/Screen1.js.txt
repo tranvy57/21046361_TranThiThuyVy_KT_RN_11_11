@@ -21,7 +21,7 @@ export default function Screen1({navigation, route}) {
         onPress={() => {
           navigation.navigate('Screen2', {
             name: name
-          })
+          }) 
         }}
       > 
         <Text style = {{color: 'white', fontWeight: 'bold', textAlign: 'center'}}>BIKER SHOP</Text>
@@ -49,4 +49,3 @@ const styles = StyleSheet.create({
     width: 128,
   }
 });
-

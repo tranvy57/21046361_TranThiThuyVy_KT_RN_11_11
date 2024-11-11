@@ -1,0 +1,28 @@
+import { createSlice } from '@reduxjs/toolkit';
+
+// Dữ liệu ban đầu được truyền từ bên ngoài vào store
+const initialState = {
+  list: [],  // Danh sách dữ liệu sẽ được truyền vào bên ngoài
+};
+
+const dataSlice = createSlice({
+  name: 'data',
+  initialState,
+  reducers: {
+    // Action để thêm phần tử vào danh sách
+    add: (state, action) => {
+      state.list.push(action.payload);
+    },
+
+    // Action để thiết lập lại toàn bộ danh sách từ bên ngoài
+    setData: (state, action) => {
+      state.list = action.payload;
+    },
+  },
+});
+
+// Export các actions
+export const { add, setData } = dataSlice.actions;
+
+// Export reducer
+export default dataSlice.reducer;

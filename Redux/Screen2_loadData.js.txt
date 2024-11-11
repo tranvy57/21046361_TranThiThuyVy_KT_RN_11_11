@@ -1,0 +1,162 @@
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  Button,
+} from 'react-native';
+
+import { setData, add } from './dataSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+
+
+export default function Screen2({ navigation, route }) {
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.data.list);
+  
+
+  useEffect(() => {
+    // Sửa lại tên biến để đúng với mục đích
+    const showApi = 'https://6703a656ab8a8f89273107fe.mockapi.io/api/products';
+
+    // Gọi API và cập nhật dữ liệu vào Redux store
+    axios
+      .get(showApi)
+      .then((res) => {
+        // Khi nhận được dữ liệu, dispatch action setData để lưu vào Redux store
+        dispatch(setData(res.data));
+      })
+      .catch((err) => {
+        // Nếu có lỗi khi gọi API, log ra lỗi
+        console.error('Error fetching data:', err);
+      });
+  }, [dispatch]);
+
+  return (
+    <View style={{}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 20 }}> {name} </Text>
+        </View>
+      </View>
+      <Text> </Text>
+
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+        {' '}
+        The world’s Best Bike{' '}
+      </Text>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          gap: 20,
+          padding: 20,
+          justifyContent: 'space-between',
+        }}>
+        <TouchableOpacity
+          style={{ borderWidth: 1, borderRadius: 5, borderBlockColor: 'pink' }}>
+          <Text> All </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ borderWidth: 1, borderRadius: 5, borderBlockColor: 'pink' }}>
+          <Text> RoadBy </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ borderWidth: 1, borderRadius: 5, borderBlockColor: 'pink' }}>
+          <Text> Moutain </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View>
+        <FlatList
+          data={products}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={{ width: '50%', padding: 10 }}>
+              <Image source={{ uri: item.image }} />
+
+              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                {item.name}
+              </Text>
+              <Text>${item.price}</Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+        />
+      </View>
+
+      <TouchableOpacity
+        style={{ padding: 5, backgroundColor: 'pink' }}
+        onPress={() => {
+          navigation.navigate('Screen3', { name: name });
+        }}>
+        +
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const Task = ({ item, onDelete, onUpdate }) => {
+  return (
+    <View
+      style={[
+        styles.row,
+        {
+          justifyContent: 'space-between',
+          backgroundColor: 'white',
+          borderRadius: 10,
+          padding: 5,
+          marginBottom: 2,
+          borderWidth: 1,
+        },
+      ]}>
+      <View>
+        <Text> {item.todo}</Text>
+      </View>
+
+      <TouchableOpacity onPress={onUpdate}></TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  paragraph: {
+    margin: 24,
+    marginTop: 0,
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  logo: {
+    height: 128,
+    width: 128,
+  },
+  row: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+});
