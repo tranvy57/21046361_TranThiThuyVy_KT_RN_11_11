@@ -1,0 +1,62 @@
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Button
+} from 'react-native';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+selectedItem={
+  "id": "1",
+  "name": "Cheese",
+    "description": "New range of formal shirts are designed keeping you in mind. With fits and styling that will make you stand apart",
+    "image": "https://loremflickr.com/640/480/business",
+    "price": "608.00",
+}
+
+export default function Screen3({ navigation, route }) {
+  
+  const { selectedItem } = route.params;
+
+  return (
+    <View
+      style={{ flex: 1, justifyContent: 'flex-start', gap: 20, padding: 20 }}>
+      <Image source={require('./XEDAP.png')} />
+
+      <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'purple' }}>
+        {selectedItem.name}
+      </Text>
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+        {selectedItem.price}
+      </Text>
+      <Text style={{ fontSize: 20 }}>
+        New range of formal shirts are designed keeping you in mind. With fits
+        and styling that will make you stand apart
+      </Text>
+
+      <Button title="Add to card" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  paragraph: {
+    margin: 24,
+    marginTop: 0,
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  logo: {
+    height: 128,
+    width: 128,
+  },
+});
