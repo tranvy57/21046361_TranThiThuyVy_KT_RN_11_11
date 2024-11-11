@@ -9,43 +9,38 @@ import {
   Button,
 } from 'react-native';
 
+import { setData, add } from './dataSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
-const products = [
-  { id: 1, name: 'Item 1' },
-  { id: 2, name: 'Item 2' },
-  { id: 3, name: 'Item 3' },
-  { id: 4, name: 'Item 4' },
-  { id: 5, name: 'Item 5' },
-];
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function Screen2({ navigation, route }) {
-  const [tasks, setStaks] = useState([]);
-  const name = route.params?.name;
-  const [search, setSearch] = useState('');
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.data.list);
 
   useEffect(() => {
-    if (search === '') {
-      getStask();
-    } else {
-      setStaks(tasks.filter((item) => item.todo.includes(search)));
-    }
-  }, [search]);
+    // Sửa lại tên biến để đúng với mục đích
+    const showApi = 'https://6703a656ab8a8f89273107fe.mockapi.io/api/products';
 
-  useEffect(() => {
-    getStask();
-  }, []);
+    // Gọi API và cập nhật dữ liệu vào Redux store
+    axios
+      .get(showApi)
+      .then((res) => {
+        // Khi nhận được dữ liệu, dispatch action setData để lưu vào Redux store
+        dispatch(setData(res.data));
+      })
+      .catch((err) => {
+        // Nếu có lỗi khi gọi API, log ra lỗi
+        console.error('Error fetching data:', err);
+      });
+  }, [dispatch]);
 
-  const getStask = () => {
-    showAip = 'https://6703a656ab8a8f89273107fe.mockapi.io/api/todos';
-    axios.get(showAip).then((res) => {
-      setStaks(res.data);
-    });
-  };
+   const handleClick = (item) => {
+    // dispatch(setSelectedItem(item));
 
-  const handleUpdateButton = (item) => {
-    navigation.navigate('Screen3', { item: item, name: name });
+    navigation.navigate('Screen3', { selectedItem: item });
   };
 
   return (
@@ -97,10 +92,23 @@ export default function Screen2({ navigation, route }) {
         <FlatList
           data={products}
           renderItem={({ item }) => (
-            <TouchableOpacity style={{ width: '50%', padding: 10 }}>
-              <Image source={require('./xedapnho.png')} />
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>{item.name}</Text>
-              <Text>$1800</Text>
+            <TouchableOpacity
+              style={{ width: '50%', padding: 10, backgroundColor: 'pink', borderRadius: 4, justifyContent: 'center', alignItems: 'center', margin: 4}}
+              onPress={() => handleClick(item)}
+              >
+              <View style={{width: '100%'}}> 
+              
+               <Icon name="heart-o" size={20} color="gray" />
+               </View>
+              <Image
+                source={{ uri: item.image }}
+                style={{ width: 100, height: 100 }}
+              />
+
+              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                {item.name}
+              </Text>
+              <Text>${item.price}</Text>
             </TouchableOpacity>
           )}
           keyExtractor={(item) => item.id}
@@ -108,39 +116,10 @@ export default function Screen2({ navigation, route }) {
         />
       </View>
 
-      <TouchableOpacity
-        style={{ padding: 5, backgroundColor: 'pink' }}
-        onPress={() => {
-          navigation.navigate('Screen3', { name: name });
-        }}>
-        +
-      </TouchableOpacity>
+
     </View>
   );
 }
-
-const Task = ({ item, onDelete, onUpdate }) => {
-  return (
-    <View
-      style={[
-        styles.row,
-        {
-          justifyContent: 'space-between',
-          backgroundColor: 'white',
-          borderRadius: 10,
-          padding: 5,
-          marginBottom: 2,
-          borderWidth: 1,
-        },
-      ]}>
-      <View>
-        <Text> {item.todo}</Text>
-      </View>
-
-      <TouchableOpacity onPress={onUpdate}></TouchableOpacity>
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
